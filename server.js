@@ -31,13 +31,20 @@ MongoClient.connect(
 );
 
 app.get("/collection/activities", (req, res, next) => {
-    db.collection("activities")
-      .find({})
-      .toArray((err, results) => {
-        if (err) return next(err);
-        res.send(results);
-      });
-  });
+  db.collection("activities")
+    .find({})
+    .toArray((err, results) => {
+      if (err) return next(err);
+      res.send(results);
+    });
+});
+
+app.post("/collection/orders", (req, res, next) => {
+  db.collection("orders")
+    .insertOne(req.body)
+    .then((result) => res.status(201).send(result))
+    .catch((error) => next(error));
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
