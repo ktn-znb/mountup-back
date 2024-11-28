@@ -70,27 +70,32 @@ app.put("/collection/activities/:id", (req, res, next) => {
   );
 });
 
-app.get("collection/activities/search", (req, res, next) => {
-  console.log("Do you get here bbg");
-
-  const searchQuery = req.query.q;
-
-  if (!searchQuery) {
-    return res.status(400).send({ error: "Search query is required." });
-  }
-
-  db.collection("activities")
-    .find({
-      $or: [
-        { name: { $regex: searchQuery, $options: "i" } },
-        { location: { $regex: searchQuery, $options: "i" } },
-      ],
-    })
-    .toArray((err, results) => {
-      if (err) return next(err);
-      res.send(results);
-    });
-});
+app.get("/collection/activities/search", (req, res, next) => {
+    console.log("Do you get here?");
+    const searchQuery = req.query.q;
+  
+    if (!searchQuery) {
+      return res.status(400).send({ error: "Search query is required." });
+    }
+  
+    db.collection("activities")
+      .find({
+        $or: [
+          { name: { $regex: searchQuery, $options: "i" } },
+          { location: { $regex: searchQuery, $options: "i" } },
+          { price: parseInt(searchQuery) },
+          { vacancy: parseInt(searchQuery) }
+        ]
+      })
+      .toArray((err, results) => {
+        if (err) {
+          console.error("Error:", err); 
+          return next(err);
+        }
+        res.send(results);
+      });
+  });
+  
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
