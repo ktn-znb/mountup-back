@@ -46,6 +46,30 @@ app.post("/collection/orders", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+const ObjectID = require("mongodb").ObjectID;
+app.put("/collection/activities/:id", (req, res, next) => {
+  const activityId = req.params.id;
+  const vacancy = req.body.vacancy;
+
+  if (vacancy === undefined) {
+    return res.status(400).send({ error: "Vacancy value is required." });
+  }
+
+  db.collection("activities").updateOne(
+    { _id: new ObjectID(activityId) },
+    { $set: { vacancy: vacancy } },
+    { safe: true, multi: false },
+    (e, result) => {
+      if (e) return next(e);
+      res.send(
+        result.result.n === 1
+          ? { msg: "Vacancy updated successfully." }
+          : { msg: "Activity not found." }
+      );
+    }
+  );
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
