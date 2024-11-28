@@ -30,6 +30,15 @@ MongoClient.connect(
   }
 );
 
+app.get("/collection/activities", (req, res, next) => {
+    db.collection("activities")
+      .find({})
+      .toArray((err, results) => {
+        if (err) return next(err);
+        res.send(results);
+      });
+  });
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
