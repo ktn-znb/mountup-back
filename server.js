@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -8,17 +9,23 @@ app.use(express.json());
 app.set("port", 3000);
 app.use(cors());
 
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 const MongoClient = require("mongodb").MongoClient;
 let db;
 
-MongoClient.connect(process.env.MONGO_URI, (err, client) => {
-  if (err) {
-    console.error("Database connection failed:", err.message);
-    return;
+MongoClient.connect(
+  process.env.MONGO_URI,
+  { useUnifiedTopology: true },
+  (err, client) => {
+    if (err) {
+      console.error("Database connection failed:", err.message);
+      return;
+    }
+    db = client.db("mountup");
+    console.log("Database connected successfully");
   }
-  db = client.db("mountup");
-  console.log("Database connected successfully");
-});
+);
 
 app.get("/collection/activities", (req, res, next) => {
   db.collection("activities")
