@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 
 app.use(express.json());
 app.set("port", 3000);
@@ -18,17 +19,14 @@ app.use((req, res, next) => {
 const MongoClient = require("mongodb").MongoClient;
 let db;
 
-MongoClient.connect(
-  "mongodb+srv://zainabkhatoon3104:rootpassword@cluster0.dfc2p.mongodb.net/",
-  (err, client) => {
-    if (err) {
-      console.error("Database connection failed:", err.message);
-      return;
-    }
-    db = client.db("mountup");
-    console.log("Database connected successfully");
+MongoClient.connect(process.env.MONGO_URI, (err, client) => {
+  if (err) {
+    console.error("Database connection failed:", err.message);
+    return;
   }
-);
+  db = client.db("mountup");
+  console.log("Database connected successfully");
+});
 
 app.get("/collection/activities", (req, res, next) => {
   db.collection("activities")
@@ -71,31 +69,30 @@ app.put("/collection/activities/:id", (req, res, next) => {
 });
 
 app.get("/collection/activities/search", (req, res, next) => {
-    console.log("Do you get here?");
-    const searchQuery = req.query.q;
-  
-    if (!searchQuery) {
-      return res.status(400).send({ error: "Search query is required." });
-    }
-  
-    db.collection("activities")
-      .find({
-        $or: [
-          { name: { $regex: searchQuery, $options: "i" } },
-          { location: { $regex: searchQuery, $options: "i" } },
-          { price: parseInt(searchQuery) },
-          { vacancy: parseInt(searchQuery) }
-        ]
-      })
-      .toArray((err, results) => {
-        if (err) {
-          console.error("Error:", err); 
-          return next(err);
-        }
-        res.send(results);
-      });
-  });
-  
+  console.log("Do you get here?");
+  const searchQuery = req.query.q;
+
+  if (!searchQuery) {
+    return res.status(400).send({ error: "Search query is required" });
+  }
+
+  db.collection("activities")
+    .find({
+      $or: [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { location: { $regex: searchQuery, $options: "i" } },
+        { price: parseInt(searchQuery) },
+        { vacancy: parseInt(searchQuery) },
+      ],
+    })
+    .toArray((err, results) => {
+      if (err) {
+        console.error("Error:", err);
+        return next(err);
+      }
+      res.send(results);
+    });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
