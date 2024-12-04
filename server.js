@@ -14,6 +14,19 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 const MongoClient = require("mongodb").MongoClient;
 let db;
 
+app.use((req, res, next) => {
+  console.log(`Date: ${new Date().toISOString()}`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`Status: ${res.statusCode}`);
+  if (req.method === "POST" || req.method === "PUT") {
+    console.log(`Body: ${JSON.stringify(req.body, null, 2)}`);
+  }
+  
+  console.log("-------------------------");
+  next();
+});
+
 MongoClient.connect(
   process.env.MONGO_URI,
   { useUnifiedTopology: true },
@@ -24,6 +37,7 @@ MongoClient.connect(
     }
     db = client.db("mountup");
     console.log("Database connected successfully");
+    console.log("-------------------------");
   }
 );
 
