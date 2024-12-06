@@ -51,7 +51,7 @@ app.get("/collection/activities", (req, res, next) => {
 });
 
 app.post("/collection/orders", (req, res, next) => {
-  db.collection("orders")
+  db.collection("orders2")
     .insertOne(req.body)
     .then((result) => res.status(201).send(result))
     .catch((error) => next(error));
