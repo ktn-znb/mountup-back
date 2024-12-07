@@ -6,7 +6,6 @@ const path = require("path");
 require("dotenv").config();
 
 app.use(express.json());
-app.set("port", 3000);
 app.use(cors());
 
 app.use("/images", express.static(path.join(__dirname, "images")));
