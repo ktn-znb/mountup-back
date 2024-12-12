@@ -40,6 +40,19 @@ MongoClient.connect(
   }
 );
 
+app.get("/", (req, res) => {
+  res.send(`
+    <h1>Hello!</h1>
+    <p>You won't find anything, but here are a few things you can do:</p>
+    <ul>
+      <li><strong>View activities:</strong> Go to <a href="/collection/activities">/collection/activities</a> to view a list of available activities.</li>
+      <li><strong>Search for activities:</strong> Use the search feature by visiting <a href="/collection/activities/search?q=your_search_query">/collection/activities/search?q=your_search_query</a> (replace 'your_search_query' with your desired search terms).</li>
+    </ul>
+    <p>Feel free to explore!</p>
+  `);
+});
+
+
 app.get("/collection/activities", (req, res, next) => {
   db.collection("activities")
     .find({})
