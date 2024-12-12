@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   if (req.method === "POST" || req.method === "PUT") {
     console.log(`Body: ${JSON.stringify(req.body, null, 2)}`);
   }
-  
+
   console.log("-------------------------");
   next();
 });
@@ -103,6 +103,11 @@ app.get("/collection/activities/search", (req, res, next) => {
       }
       res.send(results);
     });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ error: " Sorry :P, Something went wrong!" });
 });
 
 const port = process.env.PORT || 3000;
