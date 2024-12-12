@@ -8,8 +8,6 @@ require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
-app.use("/images", express.static(path.join(__dirname, "images")));
-
 const MongoClient = require("mongodb").MongoClient;
 let db;
 
@@ -25,6 +23,8 @@ app.use((req, res, next) => {
   console.log("-------------------------");
   next();
 });
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 MongoClient.connect(
   process.env.MONGO_URI,
