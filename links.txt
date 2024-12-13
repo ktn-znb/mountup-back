@@ -1,0 +1,4 @@
+github frontend repository link: https://github.com/ktn-znb/mountup-front
+github backend repository link: https://github.com/ktn-znb/mountup-back
+GitHub pages link: https://ktn-znb.github.io/mountup-front/
+Render backend link: https://mountup-webservice.onrender.com/
